@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+<!---->
+{% block page_title %} artikel {% endblock page_title %}
+
+<!---->
+
+{% block contents %}
+
+<div class="row">
+  <div class="col-md-8">
+    {% if is_paginated %}
+    <nav aria-label="artikelpage">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="{% url 'artikel:list' page_obj.previous_page_number %}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+
+        {% endif %}
+
+        <!---->
+        {% for page in paginator.page_range %}
+        <!---->
+        {% if page is page_obj.number %}
+        <li class="page-item active" aria-current="page">
+          <span class="page-link">{{page}} <span class="sr-only"></span></span>
+        </li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="{% url 'artikel:list' page %}">{{page}}</a></li>
+        {% endif %}
+        <!---->
+        {% endfor %} {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="{% url 'artikel:list' page_obj.next_page_number %}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">next</span>
+        </li>
+
+        {% endif %}
+      </ul>
+    </nav>
+
+    {% endif %} {% for artikel in artikel_list %}
+    <h3><a class="text-dark" href="{% url 'artikel:detail' artikel.slug %}">{{artikel.judul}}</a></h3>
+    <p>kategori: {{artikel.kategori}} | {{artikel.published}}</p>
+    <p class="border-bottom">{{artikel.isi|truncatewords:50}} <a href="{% url 'artikel:detail' artikel.slug %}">selengkapnya</a></p>
+    {% endfor %}
+  </div>
+  <div class="col-sm">
+    <h3>kategori</h3>
+
+    {% for kategori in kategori_list %}
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><a href="{% url 'artikel:category' kategori 1 %}">{{kategori}}</a></li>
+    </ul>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock contents %}
